@@ -43,6 +43,8 @@ function createRandomProduct() {
 
 for (let i = 0; i < TOTAL_N_DOCUMENTS; i++) {
 	// Create random document from template
-	product = createRandomProduct()
-	console.log(product)
+	var product = createRandomProduct()
+	db.products.insert(product)	
 }
+
+db.products.count({})
