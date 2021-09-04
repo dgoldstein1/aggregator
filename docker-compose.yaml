@@ -1,6 +1,18 @@
 version: "2"
 services:
 
+
+  ######################
+  ## price aggregator ##
+  ######################
+
+  aggregator:
+    image: dgoldstein1/aggregator
+    ports:
+      - 8080:8080
+    environment:
+      - MONGO_URL=mongodb://mongo:27017
+
   ################
   ## Monitoring ##
   ################
@@ -9,9 +21,18 @@ services:
     image: prom/prometheus:v2.11.1
     ports:
       - 9090:9090
-    entrypoint: "/bin/prometheus --web.external-url http://localhost:8443/admin/prometheus/ --web.route-prefix=/ --log.level=debug --config.file=/etc/prometheus/prometheus.yml"
+    entrypoint: "/bin/prometheus --log.level=debug --config.file=/etc/prometheus/prometheus.yml"
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:6.2.4
+    volumes:
+      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+    depends_on:
+      - prom
+    ports:
+    - "3000:3000"
 
   ########
   ## DB ##

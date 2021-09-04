@@ -7,12 +7,32 @@ Aggregator service for product API
 go mod vendor
 ```
 
-## Run
+## Build
 
 ```bash
-TODO: build docker container
+go build -o aggregator
+```
 
+## Docker Build
+
+```bash
+docker build . -t dgoldstein1/aggregator
+```
+
+## Run
+
+
+### Docker
+
+```bash
 docker-compose up -d
+```
+
+### Locally
+
+```bash
+export MONGO_URL="mongodb://localhost:27017"
+./aggregator
 ```
 
 ## Insert Data

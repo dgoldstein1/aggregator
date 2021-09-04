@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/Depado/ginprom"
 	"github.com/gin-gonic/gin"
 	"github.com/patrickmn/go-cache"
 	"github.com/pkg/errors"
-	"github.com/zsais/go-gin-prometheus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
@@ -40,7 +40,12 @@ func (s *Server) ListenAndServe() {
 	// initialize cache
 	router := gin.Default()
 	// add prometheus metrics ('/metrics')
-	ginprometheus.NewPrometheus("gin").Use(router)
+	p := ginprom.New(
+		ginprom.Engine(router),
+		ginprom.Subsystem("gin"),
+		ginprom.Path("/metrics"),
+	)
+	router.Use(p.Instrument())
 	// add handlers
 	router.GET("/products/:id", s.GetProduct)
 	router.PUT("/products/:id", s.UpdateProduct)

@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 )
 
 func main() {
 	// DB Connection
-	client, coll, err := connectToDB("mongodb://localhost:27017")
+	client, coll, err := connectToDB(os.Getenv("MONGO_URL"))
 	if err != nil {
 		log.Fatalf("Could not connect to DB: %v\n", err)
 	}
