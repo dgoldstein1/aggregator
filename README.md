@@ -53,3 +53,7 @@ curl -s http://localhost:8080/products/13860428 \
 
 curl -s http://localhost:8080/products/13860428 | jq
 ```
+
+## Metrics
+
+Internal metrics are recorded through prometheus. To visualize metrics, go to http://localhost:3000 and explore metrics dashboards.
