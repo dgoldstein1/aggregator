@@ -44,7 +44,8 @@ function createRandomProduct() {
 for (let i = 0; i < TOTAL_N_DOCUMENTS; i++) {
 	// Create random document from template
 	var product = createRandomProduct()
-	db.products.insert(product)	
+	db.products.insert(product)
+	printjson(product)
 }
 
-db.products.count({})
+print("total number of documents in DB: ", db.products.count({}))
