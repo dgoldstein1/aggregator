@@ -5,15 +5,16 @@ import (
 )
 
 type Product struct {
-	ID           int         `json:"id"`
-	Name         string      `json:"name"`
-	CurrentPrice interface{} `json:"current_price"`
+	ID            int    `json:"id"`
+	Name          string `json:"name"`
+	Current_Price struct {
+		Value         int    `json:"value"`
+		Currency_Code string `json:"currency_code"`
+	} `json:"current_price"`
 }
 
 type Server struct {
 	Coll *mongo.Collection
-	// GetProduct    func(c *gin.Context)
-	// UpdateProduct func(c *gin.Context)
 }
 
 type ErrorResponse struct {
