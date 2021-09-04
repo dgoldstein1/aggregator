@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// DB Connection
-	client, err := connectToDB("mongodb://localhost:27017")
+	client, coll, err := connectToDB("mongodb://localhost:27017")
 	if err != nil {
 		log.Fatalf("Could not connect to DB: %v\n", err)
 	}
@@ -19,6 +19,6 @@ func main() {
 		}
 	}()
 	// initialize server instance
-	s := Server{getProductCollection(client)}
+	s := Server{coll}
 	s.ListenAndServe()
 }
