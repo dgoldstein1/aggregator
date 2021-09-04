@@ -8,18 +8,14 @@ import (
 	"net/http"
 )
 
-func main() {
-	listenAndServe()
-}
-
 // listenAndServe initializes handlers and serves RESTApi on port 8080
-func listenAndServe() {
+func (s *Server) ListenAndServe() {
 	router := gin.Default()
 	// add prometheus metrics
 	ginprometheus.NewPrometheus("gin").Use(router)
 	// add handlers
-	router.GET("/products/:id", GetProduct)
-	router.PUT("/products/:id", UpdateProduct)
+	router.GET("/products/:id", s.GetProduct)
+	router.PUT("/products/:id", s.UpdateProduct)
 	// start router
 	router.Run(":8080")
 }
@@ -27,7 +23,7 @@ func listenAndServe() {
 // GetProduct Performs an HTTP GET to retrieve the product name from an external API.
 // (For this exercise the data will come from redsky.target.com, but let’s
 // just pretend this is an internal resource hosted by myRetail)
-func GetProduct(c *gin.Context) {
+func (s *Server) GetProduct(c *gin.Context) {
 	productID := c.Param("id")
 	_, err := validateIncomingProductID(productID)
 	if err != nil {
@@ -35,13 +31,14 @@ func GetProduct(c *gin.Context) {
 		returnErrorToClient(c, err, http.StatusBadRequest)
 		return
 	}
+	// TODO: try to find product in DB
 }
 
 // UpdateProduct Accepts an HTTP PUT request at the same path (/products/{id}),
 // containing a JSON request body similar to the GET response, and updates the
 // product’s price in the data store.
-func UpdateProduct(c *gin.Context) {
-
+func (s *Server) UpdateProduct(c *gin.Context) {
+	returnErrorToClient(c, errors.New("Not Implemented"), 500)
 }
 
 // validateProductID checks to see if incoming ID is valid
