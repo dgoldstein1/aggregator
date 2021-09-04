@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -39,4 +40,14 @@ func connectToDB(uri string) (*mongo.Client, *mongo.Collection, error) {
 // mongo.Client and mongo.Collection are thread safe
 func getProductCollection(client *mongo.Client) *mongo.Collection {
 	return client.Database("products").Collection("products")
+}
+
+// lookupByID queries collection for given product ID
+func lookupByID(coll *mongo.Collection, productID int) (*Product, error) {
+	product := Product{}
+	filter := bson.D{{"id", productID}}
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	err := coll.FindOne(ctx, filter).Decode(&product)
+	return &product, err
 }
