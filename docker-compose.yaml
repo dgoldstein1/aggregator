@@ -1,0 +1,23 @@
+version: "2"
+services:
+
+  ################
+  ## Monitoring ##
+  ################
+
+  prom:
+    image: prom/prometheus:v2.11.1
+    ports:
+      - 9090:9090
+    entrypoint: "/bin/prometheus --web.external-url http://localhost:8443/admin/prometheus/ --web.route-prefix=/ --log.level=debug --config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  ########
+  ## DB ##
+  ########
+
+  mongodb:
+    image: 'mongo:4.2.11'
+    ports:
+      - '27017:27017'
