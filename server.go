@@ -10,6 +10,23 @@ import (
 	"net/http"
 )
 
+type Server struct {
+	Coll *mongo.Collection
+}
+
+type UpdateProductRequest struct {
+	Price float32 `json:"price"`
+}
+
+type UpdateProductResponse struct {
+	Result string `json:"result"`
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+	Code  int    `json:"code"`
+}
+
 // listenAndServe initializes handlers and serves RESTApi on port 8080
 func (s *Server) ListenAndServe() {
 	router := gin.Default()
