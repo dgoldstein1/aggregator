@@ -50,13 +50,19 @@ func (s *Server) GetProduct(c *gin.Context) {
 		returnErrorToClient(c, err, http.StatusBadRequest)
 		return
 	}
+	// fetch redsky product
+	redskyProduct, err := FetchRedSkyByID(productID)
+	if err != nil {
+		returnErrorToClient(c, err, http.StatusBadRequest)
+	}
 	// try to find product in DB
 	product, err := lookupByID(s.Coll, productID)
 	if err != nil {
 		returnErrorToClient(c, err, http.StatusInternalServerError)
 		return
 	}
-	// successfully found product by ID
+	// successfully found product by ID, add name and return in response
+	product.Name = redskyProduct.Product.Item.Product_Description.Title
 	c.JSON(http.StatusOK, product)
 }
 
