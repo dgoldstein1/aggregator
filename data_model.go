@@ -14,9 +14,22 @@ type Product struct {
 	ID            int    `json:"id"`
 	Name          string `json:"name"`
 	Current_Price struct {
-		Value         int    `json:"value"`
-		Currency_Code string `json:"currency_code"`
+		Value         float32 `json:"value"`
+		Currency_Code string  `json:"currency_code"`
 	} `json:"current_price"`
+}
+
+type RedSkyResponse struct {
+	Product struct {
+		Item struct {
+			// productID
+			Tcin                string
+			Product_Description struct {
+				// title used in "name" field in response
+				Title string `json:"title"`
+			} `json:"product_description`
+		} `json:"item"`
+	} `json:"product"`
 }
 
 // validateProductID checks to see if incoming ID is valid
@@ -33,7 +46,7 @@ func validateIncomingProductID(id string) (int, error) {
 }
 
 // priceIsValid is a helper that checks if price is in valid range
-func priceIsValid(price int) bool {
+func priceIsValid(price float32) bool {
 	return price > 0 && price <= 9999999999999999
 }
 
@@ -46,7 +59,7 @@ type Server struct {
 }
 
 type UpdateProductRequest struct {
-	Price int `json:"price"`
+	Price float32 `json:"price"`
 }
 
 type UpdateProductResponse struct {

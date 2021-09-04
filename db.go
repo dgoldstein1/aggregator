@@ -53,7 +53,7 @@ func lookupByID(coll *mongo.Collection, productID int) (*Product, error) {
 }
 
 // updatePriceByID sets the new price in DB if exists
-func updatePriceByID(coll *mongo.Collection, productID int, newPrice int) error {
+func updatePriceByID(coll *mongo.Collection, productID int, newPrice float32) error {
 	// do not insert new document if none found
 	opts := options.Update().SetUpsert(false)
 	filter := bson.D{{"id", productID}}

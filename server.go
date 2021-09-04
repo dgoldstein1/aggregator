@@ -72,7 +72,7 @@ func (s *Server) UpdateProduct(c *gin.Context) {
 		return
 	}
 	// success
-	c.JSON(http.StatusOK, UpdateProductResponse{fmt.Sprintf("Successfully updated price of productID %d to %d", productID, reqBody.Price)})
+	c.JSON(http.StatusOK, UpdateProductResponse{fmt.Sprintf("Successfully updated price of productID %d to %f", productID, reqBody.Price)})
 }
 
 // returnErrorToClient is a helper for handlers to return error to client

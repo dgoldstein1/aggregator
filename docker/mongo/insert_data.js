@@ -32,9 +32,7 @@ function getRandomName() {
 function createRandomProduct() {
 	return {
 	    "id": getRandomInt(10000000, 99999999),
-	    "name": getRandomName(),
-	    "current_price":
-	    {
+	    "current_price": {
 	        "value": getRandomInt(1, 999999),
 	        "currency_code": "USD"
 	    }
@@ -47,5 +45,14 @@ for (let i = 0; i < TOTAL_N_DOCUMENTS; i++) {
 	db.products.insert(product)
 	printjson(product)
 }
+
+// insert Big Lebowski
+db.products.insert({
+	"id" : 13860428,
+	"current_price" : {
+		"value" : 10,
+		"currency_code" : "USD"
+	}
+})
 
 print("total number of documents in DB: ", db.products.count({}))
