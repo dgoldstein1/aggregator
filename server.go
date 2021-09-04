@@ -54,6 +54,7 @@ func (s *Server) GetProduct(c *gin.Context) {
 	redskyProduct, err := FetchRedSkyByID(productID)
 	if err != nil {
 		returnErrorToClient(c, err, http.StatusBadRequest)
+		return
 	}
 	// try to find product in DB
 	product, err := lookupByID(s.Coll, productID)

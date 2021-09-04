@@ -26,6 +26,9 @@ func FetchRedSkyByID(productID int) (*RedSkyProduct, error) {
 	if err != nil {
 		return nil, err
 	}
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Bad response code on redsky lookup: %d", productID)
+	}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
