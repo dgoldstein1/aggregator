@@ -8,10 +8,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
+	"github.com/patrickmn/go-cache"
+	"time"
 )
 
 type Server struct {
+	// product price collection
 	Coll *mongo.Collection
+	// map of productID : name
+	RedSkyCache *cache.Cache
 }
 
 type UpdateProductRequest struct {
@@ -29,6 +34,10 @@ type ErrorResponse struct {
 
 // listenAndServe initializes handlers and serves RESTApi on port 8080
 func (s *Server) ListenAndServe() {
+	// Create a cache with a default expiration time of 1 minute, and which
+	// purges expired items every 10 minutes
+	s.RedSkyCache = cache.New(1*time.Minute, 10*time.Minute)
+	// initialize cache
 	router := gin.Default()
 	// add prometheus metrics ('/metrics')
 	ginprometheus.NewPrometheus("gin").Use(router)
@@ -51,7 +60,7 @@ func (s *Server) GetProduct(c *gin.Context) {
 		return
 	}
 	// fetch redsky product
-	redskyProduct, err := FetchRedSkyByID(productID)
+	redskyName, err := FetchRedSkyByID(s.RedSkyCache, productID)
 	if err != nil {
 		returnErrorToClient(c, err, http.StatusBadRequest)
 		return
@@ -63,7 +72,7 @@ func (s *Server) GetProduct(c *gin.Context) {
 		return
 	}
 	// successfully found product by ID, add name and return in response
-	product.Name = redskyProduct.Product.Item.Product_Description.Title
+	product.Name = redskyName
 	c.JSON(http.StatusOK, product)
 }
 

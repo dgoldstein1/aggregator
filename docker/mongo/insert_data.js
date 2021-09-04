@@ -42,12 +42,12 @@ function createRandomProduct() {
 for (let i = 0; i < TOTAL_N_DOCUMENTS; i++) {
 	// Create random document from template
 	var product = createRandomProduct()
-	db.products.insert(product)
+	db.prices.insert(product)
 	printjson(product)
 }
 
 // insert Big Lebowski
-db.products.insert({
+db.prices.insert({
 	"id" : 13860428,
 	"current_price" : {
 		"value" : 10,
@@ -55,4 +55,4 @@ db.products.insert({
 	}
 })
 
-print("total number of documents in DB: ", db.products.count({}))
+print("total number of documents in DB: ", db.prices.count({}))

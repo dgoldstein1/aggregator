@@ -19,6 +19,6 @@ func main() {
 		}
 	}()
 	// initialize server instance
-	s := Server{coll}
+	s := Server{coll, nil}
 	s.ListenAndServe()
 }

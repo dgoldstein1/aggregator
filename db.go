@@ -39,7 +39,7 @@ func connectToDB(uri string) (*mongo.Client, *mongo.Collection, error) {
 // getProductCollection is helper for getting product collection.
 // mongo.Client and mongo.Collection are thread safe
 func getProductCollection(client *mongo.Client) *mongo.Collection {
-	return client.Database("products").Collection("products")
+	return client.Database("products").Collection("prices")
 }
 
 // lookupByID queries collection for given product ID
