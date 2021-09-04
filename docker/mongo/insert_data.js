@@ -35,7 +35,7 @@ function createRandomProduct() {
 	    "name": getRandomName(),
 	    "current_price":
 	    {
-	        "value": getRandomInt(1, 9999999999999999),
+	        "value": getRandomInt(1, 999999),
 	        "currency_code": "USD"
 	    }
 	}

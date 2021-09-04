@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/zsais/go-gin-prometheus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 // listenAndServe initializes handlers and serves RESTApi on port 8080
@@ -36,11 +36,7 @@ func (s *Server) GetProduct(c *gin.Context) {
 	// try to find product in DB
 	product, err := lookupByID(s.Coll, productID)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			returnErrorToClient(c, errors.Wrap(err, "could not find product"), http.StatusNotFound)
-		} else {
-			returnErrorToClient(c, errors.Wrap(err, "database error"), http.StatusInternalServerError)
-		}
+		returnErrorToClient(c, err, http.StatusInternalServerError)
 		return
 	}
 	// successfully found product by ID
@@ -51,24 +47,39 @@ func (s *Server) GetProduct(c *gin.Context) {
 // containing a JSON request body similar to the GET response, and updates the
 // product’s price in the data store.
 func (s *Server) UpdateProduct(c *gin.Context) {
-	returnErrorToClient(c, errors.New("Not Implemented"), 500)
-}
-
-// validateProductID checks to see if incoming ID is valid
-// if so, returns as int. Else returns error
-func validateIncomingProductID(id string) (int, error) {
-	i, err := strconv.Atoi(id)
+	stringID := c.Param("id")
+	productID, err := validateIncomingProductID(stringID)
 	if err != nil {
-		return -1, errors.New("invalid ID")
+		// invalid product id: bad request
+		returnErrorToClient(c, err, http.StatusBadRequest)
+		return
 	}
-	if i < 10000000 || i > 99999999 {
-		return -1, errors.New("ID is not in valid range")
+	// validate incoming price
+	var reqBody UpdateProductRequest
+	err = c.BindJSON(&reqBody)
+	if err != nil {
+		returnErrorToClient(c, err, http.StatusBadRequest)
+		return
 	}
-	return i, nil
+	// validate incoming price
+	if !priceIsValid(reqBody.Price) {
+		returnErrorToClient(c, errors.New("invalid price"), http.StatusBadRequest)
+	}
+	// update in DB
+	err = updatePriceByID(s.Coll, productID, reqBody.Price)
+	if err != nil {
+		returnErrorToClient(c, err, http.StatusInternalServerError)
+		return
+	}
+	// success
+	c.JSON(http.StatusOK, UpdateProductResponse{fmt.Sprintf("Successfully updated price of productID %d to %d", productID, reqBody.Price)})
 }
 
 // returnErrorToClient is a helper for handlers to return error to client
 func returnErrorToClient(c *gin.Context, err error, code int) {
+	if err == mongo.ErrNoDocuments {
+		code = http.StatusNotFound
+	}
 	c.JSON(code, ErrorResponse{
 		Error: err.Error(),
 		Code:  code,

@@ -51,3 +51,22 @@ func lookupByID(coll *mongo.Collection, productID int) (*Product, error) {
 	err := coll.FindOne(ctx, filter).Decode(&product)
 	return &product, err
 }
+
+// updatePriceByID sets the new price in DB if exists
+func updatePriceByID(coll *mongo.Collection, productID int, newPrice int) error {
+	// do not insert new document if none found
+	opts := options.Update().SetUpsert(false)
+	filter := bson.D{{"id", productID}}
+	update := bson.D{{"$set", bson.D{{"current_price.value", newPrice}}}}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	result, err := coll.UpdateOne(ctx, filter, update, opts)
+	if err != nil {
+		return err
+	}
+	if result.MatchedCount == 0 {
+		return mongo.ErrNoDocuments
+	}
+	return nil
+}
