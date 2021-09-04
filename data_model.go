@@ -5,3 +5,8 @@ type Product struct {
 	Name         string      `json:"name"`
 	CurrentPrice interface{} `json:"current_price"`
 }
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+	Code  int    `json:"code"`
+}
