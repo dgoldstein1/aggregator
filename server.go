@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/patrickmn/go-cache"
 	"github.com/pkg/errors"
 	"github.com/zsais/go-gin-prometheus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
-	"github.com/patrickmn/go-cache"
 	"time"
 )
 
